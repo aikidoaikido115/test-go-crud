@@ -1,18 +1,14 @@
 package main
 
 import (
-	"log"
 	"github.com/gofiber/fiber/v2"
+	"github.com/aikidoaikido115/test-go-crud/routes"
 )
 
-
-func main(){
+func main() {
 	app := fiber.New()
 
-	app.Get("/", func (c *fiber.Ctx) error{
-		return c.SendString("Misha Necron3")
-	})
+	routes.SetupRoutes(app)
 
-
-	log.Fatal(app.Listen(":3000"))
+	app.Listen(":3000")
 }
