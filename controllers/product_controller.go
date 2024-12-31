@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/aikidoaikido115/test-go-crud/storage"
 	"github.com/aikidoaikido115/test-go-crud/models"
+	"fmt"
 )
 
 func GetProducts(c *fiber.Ctx) error {
@@ -42,7 +43,7 @@ func UpdateProduct(c *fiber.Ctx) error {
 	var updateProduct models.Product
 	if err != nil {
 		return c.Status(400).SendString("Invalid ID")
-	}
+	}	
 
 	if err := c.BodyParser(&updateProduct); err != nil {
 		return c.Status(400).SendString("Invalid request")
@@ -75,4 +76,34 @@ func DeleteProduct(c *fiber.Ctx) error {
 	}
 
 	return c.Status(404).SendString("Product not found")
+}
+
+
+//////////////////////////////////////////////////////
+
+func GetProductWithCategory(c *fiber.Ctx) error {
+	category := c.Query("category", "null")
+	var ProductWithCategory []models.Product
+	category_id := -1
+
+	fmt.Println((category))
+	
+	for _, cate := range storage.Categories {
+		if cate.Name == category {
+			category_id = cate.ID
+		}
+	}
+
+	for _, product := range storage.Products {
+		if product.CategoryID == category_id {
+			ProductWithCategory = append(ProductWithCategory, product)
+		}
+	}
+
+
+	if ProductWithCategory == nil {
+		return c.Status(404).SendString("Product not found") 
+	}
+
+	return c.JSON(ProductWithCategory)
 }
